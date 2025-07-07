@@ -12,30 +12,35 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Usuarios")
+@Table(name = "USUARIO") // Debe coincidir con la tabla en la BD
 public class User {
     @Id
-    @Column(name = "id")
+    @Column(name = "idUsuario")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
-    String nombre;
-    String apellido;
+    private Integer id;
+
+    @Column(name = "nombre")
+    private String nombre;
+
+    @Column(name = "apellido")
+    private String apellido;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "rol_id")
+    @JoinColumn(name = "idRol")
     private Rol rol;
 
-    String mail;
+    @Column(name = "email")
+    private String mail;
 
-    @Column(name = "contrasena")
+    @Column(name = "clave")
     @JsonProperty("contrasena")
     private String contrasena;
 
-    @Column(name = "fechaCreacion")
-    //@JsonProperty("fecha-creacion")
+    @Column(name = "fecha_creacion")
     private LocalDate fechaCreacion;
 
-    Boolean estado;
+    @Column(name = "activo")
+    private Boolean estado;
 
     @PrePersist
     public void prePersist() {
