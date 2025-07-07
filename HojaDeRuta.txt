@@ -1,0 +1,55 @@
+Desarrollo de Sistema de Gesti車n de Insumos Tecnol車gicos para Empresa
+?? Objetivo General:
+Desarrollar un sistema de gesti車n de insumos tecnol車gicos para uso interno en la empresa, orientado a tres tipos de usuarios (Administrador, T谷cnico y Cliente), con distintos niveles de acceso y funcionalidades, utilizando una arquitectura full stack moderna.
+?? Tecnolog赤as:
+* Backend: Java (Spring Boot)
+* Frontend: Angular
+* Base de datos: MySQL
+?? M車dulo 1: Login y Autenticaci車n
+Funcionalidad:
+* Formulario de login con email y contrase?a.
+* Validaci車n de credenciales contra base de datos (contrase?as encriptadas).
+* Redirecci車n al dashboard correspondiente seg迆n el rol del usuario.
+Roles definidos:
+* Administrador
+* T谷cnico
+* Cliente
+Consideraciones:
+* Las contrase?as se almacenan encriptadas (por ejemplo, con BCrypt).
+* Los usuarios son creados por Administradores o T谷cnicos.
+* Validaciones en frontend y backend para campos vac赤os, formato de email, etc.
+?? M車dulo 2: Dashboard Administrador
+Funcionalidades:
+* CRUD completo de:
+   * Usuarios (con asignaci車n de roles).
+   * Clientes.
+   * Insumos tecnol車gicos.
+* Acceso al historial de movimientos (prestamos, devoluciones, roturas, compras).
+* Visualizaci車n de solicitudes realizadas por clientes o t谷cnicos.
+?? M車dulo 3: Dashboard T谷cnico
+Funcionalidades:
+* Igual que el administrador:
+   * CRUD de usuarios, clientes e insumos.
+   * Acceso al historial.
+* Extras:
+   * Generaci車n de reportes y estad赤sticas por:
+      * Sector.
+      * Persona.
+      * Tipo de movimiento (compra, rotura, pr谷stamo).
+   * Visualizaci車n y aceptaci車n de solicitudes de insumos realizadas por sectores.
+?? M車dulo 4: Dashboard Cliente
+Funcionalidades:
+* Visualizaci車n de su perfil/datos.
+* Consulta de historial de movimientos (prestamos y devoluciones).
+* Env赤o de solicitudes de insumos.
+??? Base de Datos (MySQL)
+Tablas sugeridas:
+* usuarios (id, nombre, email, contrase?a, rol, activo)
+* clientes (id, nombre, datos de contacto)
+* insumos (id, nombre, categor赤a, stock, estado)
+* historial (id, tipo, fecha, usuario_id, cliente_id, insumo_id, descripci車n)
+* solicitudes (id, fecha, usuario_id, insumo_id, estado, observaciones)
+? Validaciones generales:
+* Login: email v芍lido, contrase?a requerida.
+* CRUD: campos obligatorios, validaci車n de duplicados.
+* Seguridad: roles bien definidos, encriptaci車n de contrase?as, protecci車n de rutas seg迆n permisos

@@ -1,0 +1,15 @@
+# Node modules del frontend
+**/node_modules/
+
+# Build de Angular
+**/dist/
+
+# Archivos de entorno
+.env
+
+# Archivos de Java y compilados
+**/target/
+*.class
+
+# SQL Server u otras herramientas que generan backups temporales
+*.bak
