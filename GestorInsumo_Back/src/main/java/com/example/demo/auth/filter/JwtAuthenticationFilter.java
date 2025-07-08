@@ -42,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 email = jwtUtil.extractEmail(jwt);
             } catch (Exception e) {
-                logger.error("Error al extraer email del token JWT: {}", e.getMessage());
+                logger.error("Error al extraer email del token JWT: {}" + e.getMessage());
             }
         }
 

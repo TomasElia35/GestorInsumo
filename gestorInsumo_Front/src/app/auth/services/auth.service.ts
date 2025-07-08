@@ -20,7 +20,7 @@ export interface LoginResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/api'; // Ajusta según tu backend
+  private apiUrl = 'http://localhost:8080/api'; // Ajusta según tu backend
 
   constructor(
     private http: HttpClient,
