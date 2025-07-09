@@ -6,13 +6,21 @@ import { TokenService } from '../../shared/services/token.service';
 
 export interface LoginRequest {
   email: string;
-  password: string;
+  contrasena: string; // Cambiado de 'password' a 'contrasena' para coincidir con el backend
 }
 
 export interface LoginResponse {
+  token: string;
+  email: string;
+  nombre: string;
+  apellido: string;
+  rol: string;
+  userId: number;
+}
+
+export interface AuthServiceResponse {
   success: boolean;
-  token?: string;
-  user?: any;
+  data?: LoginResponse;
   message?: string;
 }
 
@@ -20,7 +28,8 @@ export interface LoginResponse {
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/api'; // Ajusta según tu backend
+  // Cambiar la URL para coincidir con el backend
+  private apiUrl = 'http://localhost:8080/insumomanager-app';
 
   constructor(
     private http: HttpClient,
@@ -28,18 +37,31 @@ export class AuthService {
   ) { }
 
   // Login
-  login(credentials: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, credentials)
+  login(credentials: { email: string; password: string }): Observable<AuthServiceResponse> {
+    // Transformar password a contrasena para coincidir con el backend
+    const backendCredentials: LoginRequest = {
+      email: credentials.email,
+      contrasena: credentials.password
+    };
+
+    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, backendCredentials)
       .pipe(
         map((response: LoginResponse) => {
-          if (response.success && response.token) {
-            // Guardar token y datos del usuario
-            this.tokenService.setToken(response.token);
-            if (response.user) {
-              this.tokenService.setUser(response.user);
-            }
-          }
-          return response;
+          // Si llegamos aquí, el login fue exitoso
+          this.tokenService.setToken(response.token);
+          this.tokenService.setUser({
+            email: response.email,
+            nombre: response.nombre,
+            apellido: response.apellido,
+            rol: response.rol,
+            userId: response.userId
+          });
+          
+          return {
+            success: true,
+            data: response,
+            message: 'Login exitoso'
+          };
         }),
         catchError(this.handleError)
       );
@@ -61,8 +83,10 @@ export class AuthService {
   }
 
   // Manejo de errores
-  private handleError(error: HttpErrorResponse) {
+  private handleError = (error: HttpErrorResponse): Observable<AuthServiceResponse> => {
     let errorMessage = 'Ha ocurrido un error inesperado';
+    
+    console.error('Error completo:', error);
     
     if (error.error instanceof ErrorEvent) {
       // Error del cliente
@@ -71,6 +95,8 @@ export class AuthService {
       // Error del servidor
       if (error.status === 401) {
         errorMessage = 'Email o contraseña incorrectos';
+      } else if (error.status === 403) {
+        errorMessage = 'Acceso denegado. Verifica tus credenciales.';
       } else if (error.status === 500) {
         errorMessage = 'Error interno del servidor';
       } else if (error.status === 0) {
@@ -80,6 +106,9 @@ export class AuthService {
       }
     }
     
-    return throwError(() => errorMessage);
+    return throwError(() => ({
+      success: false,
+      message: errorMessage
+    }));
   }
 }

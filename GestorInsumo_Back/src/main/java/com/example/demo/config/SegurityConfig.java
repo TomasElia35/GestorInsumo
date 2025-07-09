@@ -31,7 +31,13 @@ public class SegurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        // Rutas públicas
+                        .requestMatchers("/insumomanager-app/auth/**").permitAll()
+
+                        // Rutas protegidas - CRUD de usuarios (solo ADMIN)
+                        .requestMatchers("/insumomanager-app/usuarios/**").hasRole("ADMIN")
+
+                        // Todas las demás rutas requieren autenticación
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

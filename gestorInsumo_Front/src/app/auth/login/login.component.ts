@@ -48,11 +48,15 @@ export class LoginComponent implements OnInit {
         password: this.loginForm.value.password
       };
 
+      console.log('Enviando credenciales:', credentials);
+
       this.authService.login(credentials).subscribe({
         next: (response) => {
           this.isLoading = false;
+          console.log('Respuesta del login:', response);
+          
           if (response.success) {
-            console.log('Login exitoso:', response);
+            console.log('Login exitoso, redirigiendo...');
             this.router.navigate(['/dashboard']);
           } else {
             this.errorMessage = response.message || 'Error en el login';
@@ -60,8 +64,13 @@ export class LoginComponent implements OnInit {
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = error;
           console.error('Error en login:', error);
+          
+          if (error.success === false) {
+            this.errorMessage = error.message || 'Error en el login';
+          } else {
+            this.errorMessage = 'Ha ocurrido un error inesperado';
+          }
         }
       });
     } else {
