@@ -1,0 +1,151 @@
+<!-- src/app/dashboard/users/components/user-form/user-form.component.html -->
+
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="user-form">
+  
+  <!-- Mensaje de error general -->
+  <div *ngIf="error" class="error-message">
+    <i class="fas fa-exclamation-triangle"></i>
+    {{ error }}
+  </div>
+
+  <!-- Campos del formulario -->
+  <div class="form-row">
+    <!-- Nombre -->
+    <div class="form-group">
+      <label for="nombre">Nombre *</label>
+      <input
+        type="text"
+        id="nombre"
+        formControlName="nombre"
+        class="form-control"
+        [class.error]="hasError('nombre', 'required') || hasError('nombre', 'minlength') || hasError('nombre', 'maxlength')"
+        placeholder="Ingresa el nombre"
+      >
+      <div *ngIf="nombre?.touched && nombre?.errors" class="error-text">
+        {{ getErrorMessage('nombre') }}
+      </div>
+    </div>
+
+    <!-- Apellido -->
+    <div class="form-group">
+      <label for="apellido">Apellido *</label>
+      <input
+        type="text"
+        id="apellido"
+        formControlName="apellido"
+        class="form-control"
+        [class.error]="hasError('apellido', 'required') || hasError('apellido', 'minlength') || hasError('apellido', 'maxlength')"
+        placeholder="Ingresa el apellido"
+      >
+      <div *ngIf="apellido?.touched && apellido?.errors" class="error-text">
+        {{ getErrorMessage('apellido') }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Email -->
+  <div class="form-group">
+    <label for="mail">Email *</label>
+    <input
+      type="email"
+      id="mail"
+      formControlName="mail"
+      class="form-control"
+      [class.error]="hasError('mail', 'required') || hasError('mail', 'email') || hasError('mail', 'maxlength')"
+      placeholder="ejemplo@correo.com"
+    >
+    <div *ngIf="mail?.touched && mail?.errors" class="error-text">
+      {{ getErrorMessage('mail') }}
+    </div>
+  </div>
+
+  <!-- Contraseña -->
+  <div class="form-row">
+    <div class="form-group">
+      <label for="contrasena">
+        Contraseña {{ isEditMode ? '(dejar vacío para no cambiar)' : '*' }}
+      </label>
+      <input
+        type="password"
+        id="contrasena"
+        formControlName="contrasena"
+        class="form-control"
+        [class.error]="hasError('contrasena', 'required') || hasError('contrasena', 'minlength') || hasError('contrasena', 'maxlength')"
+        placeholder="Ingresa la contraseña"
+      >
+      <div *ngIf="contrasena?.touched && contrasena?.errors" class="error-text">
+        {{ getErrorMessage('contrasena') }}
+      </div>
+    </div>
+
+    <!-- Confirmar contraseña -->
+    <div class="form-group">
+      <label for="confirmarContrasena">
+        Confirmar Contraseña {{ isEditMode ? '' : '*' }}
+      </label>
+      <input
+        type="password"
+        id="confirmarContrasena"
+        formControlName="confirmarContrasena"
+        class="form-control"
+        [class.error]="hasError('confirmarContrasena', 'required') || hasError('confirmarContrasena', 'passwordMismatch')"
+        placeholder="Confirma la contraseña"
+      >
+      <div *ngIf="confirmarContrasena?.touched && confirmarContrasena?.errors" class="error-text">
+        {{ getErrorMessage('confirmarContrasena') }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Rol -->
+  <div class="form-group">
+    <label for="rol">Rol *</label>
+    <select
+      id="rol"
+      formControlName="rol"
+      class="form-control"
+      [class.error]="hasError('rol', 'required')"
+    >
+      <option value="">Selecciona un rol</option>
+      <option *ngFor="let role of roles" [value]="role.id">
+        {{ role.nombre }}
+      </option>
+    </select>
+    <div *ngIf="rol?.touched && rol?.errors" class="error-text">
+      {{ getErrorMessage('rol') }}
+    </div>
+  </div>
+
+  <!-- Estado -->
+  <div class="form-group">
+    <div class="checkbox-group">
+      <label for="estado" class="checkbox-label">
+        <input
+          type="checkbox"
+          id="estado"
+          formControlName="estado"
+        >
+        <span class="checkmark"></span>
+        Usuario activo
+      </label>
+    </div>
+  </div>
+
+  <!-- Botones de acción -->
+  <div class="form-actions">
+    <button 
+      type="button" 
+      class="btn btn-secondary" 
+      (click)="onCancel()"
+      [disabled]="isSubmitting"
+    >
+      Cancelar
+    </button>
+    
+    <button 
+      type="submit" 
+      class="btn btn-primary" 
+      [disabled]="!isFormValid() || isSubmitting"
+    >
+      <i *ngIf="isSubmitting" class="fas fa-spinner fa-spin"></i>
+      {{ isEditMode ? 'Actualizar' : 'Crear' }} 

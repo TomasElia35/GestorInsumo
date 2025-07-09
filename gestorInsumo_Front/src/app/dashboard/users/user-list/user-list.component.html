@@ -1,0 +1,210 @@
+<!-- src/app/dashboard/users/components/user-list/user-list.component.html -->
+
+<div class="user-management-container">
+  <!-- Header -->
+  <div class="header">
+    <h2>Gestión de Usuarios</h2>
+    <button class="btn btn-primary" (click)="openCreateModal()">
+      <i class="fas fa-plus"></i> Nuevo Usuario
+    </button>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-section">
+    <div class="filters-row">
+      <div class="filter-group">
+        <label>Buscar:</label>
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm" 
+          placeholder="Nombre, apellido o email..."
+          class="search-input"
+        >
+      </div>
+      
+      <div class="filter-group">
+        <label>Estado:</label>
+        <select [(ngModel)]="statusFilter" class="filter-select">
+          <option value="all">Todos</option>
+          <option value="active">Activos</option>
+          <option value="inactive">Inactivos</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label>Rol:</label>
+        <select [(ngModel)]="roleFilter" class="filter-select">
+          <option value="all">Todos los roles</option>
+          <option *ngFor="let role of roles" [value]="role.id">{{ role.nombre }}</option>
+        </select>
+      </div>
+      
+      <button class="btn btn-secondary" (click)="clearFilters()">
+        <i class="fas fa-times"></i> Limpiar
+      </button>
+    </div>
+  </div>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="error" class="error-message">
+    <i class="fas fa-exclamation-triangle"></i>
+    {{ error }}
+  </div>
+
+  <!-- Loading spinner -->
+  <div *ngIf="loading" class="loading-spinner">
+    <i class="fas fa-spinner fa-spin"></i> Cargando usuarios...
+  </div>
+
+  <!-- Tabla de usuarios -->
+  <div class="table-container" *ngIf="!loading">
+    <table class="users-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Email</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th>Fecha Creación</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of filteredUsers" [class.inactive]="!user.estado">
+          <td>{{ user.id }}</td>
+          <td>{{ user.nombre }}</td>
+          <td>{{ user.apellido }}</td>
+          <td>{{ user.mail }}</td>
+          <td>
+            <span class="role-badge" [class]="'role-' + user.rol.id">
+              {{ user.rol.nombre }}
+            </span>
+          </td>
+          <td>
+            <span class="status-badge" [class]="user.estado ? 'active' : 'inactive'">
+              {{ user.estado ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td>{{ formatDate(user.fechaCreacion) }}</td>
+          <td>
+            <div class="actions">
+              <button 
+                class="btn-action btn-edit" 
+                (click)="openEditModal(user)"
+                title="Editar usuario"
+              >
+                <i class="fas fa-edit"></i>
+              </button>
+              
+              <button 
+                class="btn-action btn-toggle" 
+                (click)="toggleUserStatus(user)"
+                [title]="user.estado ? 'Desactivar usuario' : 'Activar usuario'"
+              >
+                <i class="fas" [class]="user.estado ? 'fa-toggle-on' : 'fa-toggle-off'"></i>
+              </button>
+              
+              <button 
+                class="btn-action btn-delete" 
+                (click)="openDeleteModal(user)"
+                title="Eliminar usuario"
+              >
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+        
+        <!-- Mensaje cuando no hay usuarios -->
+        <tr *ngIf="filteredUsers.length === 0 && !loading">
+          <td colspan="8" class="no-data">
+            <i class="fas fa-users"></i>
+            <p>No se encontraron usuarios con los filtros aplicados.</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Información adicional -->
+  <div class="info-section" *ngIf="!loading">
+    <p>
+      <strong>Total de usuarios:</strong> {{ users.length }} | 
+      <strong>Activos:</strong> {{ users.filter(u => u.estado).length }} | 
+      <strong>Inactivos:</strong> {{ users.filter(u => !u.estado).length }}
+    </p>
+  </div>
+</div>
+
+<!-- Modal de crear usuario -->
+<div class="modal-overlay" *ngIf="showCreateModal" (click)="closeCreateModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Crear Nuevo Usuario</h3>
+      <button class="btn-close" (click)="closeCreateModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <app-user-form 
+        [roles]="roles"
+        (userSaved)="onUserCreated($event)"
+        (cancelled)="closeCreateModal()"
+      ></app-user-form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de editar usuario -->
+<div class="modal-overlay" *ngIf="showEditModal" (click)="closeEditModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Editar Usuario</h3>
+      <button class="btn-close" (click)="closeEditModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <app-user-form 
+        [user]="selectedUser"
+        [roles]="roles"
+        [isEditMode]="true"
+        (userSaved)="onUserUpdated($event)"
+        (cancelled)="closeEditModal()"
+      ></app-user-form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmar eliminación -->
+<div class="modal-overlay" *ngIf="showDeleteModal" (click)="closeDeleteModal()">
+  <div class="modal-content small" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Confirmar Eliminación</h3>
+      <button class="btn-close" (click)="closeDeleteModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="delete-confirmation">
+        <i class="fas fa-exclamation-triangle warning-icon"></i>
+        <p>¿Estás seguro de que deseas eliminar al usuario:</p>
+        <p class="user-info">
+          <strong>{{ selectedUser?.nombre }} {{ selectedUser?.apellido }}</strong><br>
+          <span class="email">{{ selectedUser?.mail }}</span>
+        </p>
+        <p class="warning-text">Esta acción no se puede deshacer.</p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeDeleteModal()">
+        Cancelar
+      </button>
+      <button class="btn btn-danger" (click)="deleteUser()">
+        <i class="fas fa-trash"></i> Eliminar
+      </button>
+    </div>
+  </div>
+</div>
