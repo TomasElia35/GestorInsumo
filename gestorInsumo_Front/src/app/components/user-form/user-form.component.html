@@ -1,0 +1,175 @@
+<!-- src/app/components/user-form/user-form.component.html -->
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">
+            {{ isEditMode ? 'Editar Usuario' : 'Crear Nuevo Usuario' }}
+          </h3>
+        </div>
+        
+        <div class="card-body">
+          <!-- Loading spinner -->
+          <div *ngIf="loading" class="text-center">
+            <div class="spinner-border" role="status">
+              <span class="sr-only">Cargando...</span>
+            </div>
+          </div>
+
+          <!-- Error message -->
+          <div *ngIf="error" class="alert alert-danger" role="alert">
+            {{ error }}
+          </div>
+
+          <!-- User form -->
+          <form [formGroup]="userForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="nombre">Nombre *</label>
+                  <input 
+                    type="text" 
+                    id="nombre"
+                    class="form-control"
+                    formControlName="nombre"
+                    [class.is-invalid]="nombre?.invalid && nombre?.touched"
+                    placeholder="Ingrese el nombre">
+                  <div *ngIf="nombre?.invalid && nombre?.touched" class="invalid-feedback">
+                    {{ getFieldError('nombre') }}
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="apellido">Apellido *</label>
+                  <input 
+                    type="text" 
+                    id="apellido"
+                    class="form-control"
+                    formControlName="apellido"
+                    [class.is-invalid]="apellido?.invalid && apellido?.touched"
+                    placeholder="Ingrese el apellido">
+                  <div *ngIf="apellido?.invalid && apellido?.touched" class="invalid-feedback">
+                    {{ getFieldError('apellido') }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="mail">Email *</label>
+              <input 
+                type="email" 
+                id="mail"
+                class="form-control"
+                formControlName="mail"
+                [class.is-invalid]="mail?.invalid && mail?.touched"
+                placeholder="Ingrese el email">
+              <div *ngIf="mail?.invalid && mail?.touched" class="invalid-feedback">
+                {{ getFieldError('mail') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="contrasena">
+                Contraseña {{ isEditMode ? '(dejar vacío para no cambiar)' : '*' }}
+              </label>
+              <input 
+                type="password" 
+                id="contrasena"
+                class="form-control"
+                formControlName="contrasena"
+                [class.is-invalid]="contrasena?.invalid && contrasena?.touched"
+                placeholder="Ingrese la contraseña">
+              <div *ngIf="contrasena?.invalid && contrasena?.touched" class="invalid-feedback">
+                {{ getFieldError('contrasena') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="rol">Rol *</label>
+              <select 
+                id="rol"
+                class="form-control"
+                formControlName="rol"
+                [class.is-invalid]="rol?.invalid && rol?.touched">
+                <option value="">Seleccione un rol</option>
+                <option *ngFor="let role of roles" [value]="role.id">
+                  {{ role.nombre }}
+                </option>
+              </select>
+              <div *ngIf="rol?.invalid && rol?.touched" class="invalid-feedback">
+                {{ getFieldError('rol') }}
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="custom-control custom-switch">
+                <input 
+                  type="checkbox" 
+                  class="custom-control-input" 
+                  id="estado"
+                  formControlName="estado">
+                <label class="custom-control-label" for="estado">
+                  Usuario activo
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group mt-4">
+              <button 
+                type="submit" 
+                class="btn btn-primary"
+                [disabled]="loading">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-2"></span>
+                {{ isEditMode ? 'Actualizar' : 'Crear' }} Usuario
+              </button>
+              
+              <button 
+                type="button" 
+                class="btn btn-secondary ml-2"
+                (click)="cancel()">
+                Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.card {
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.custom-control-label {
+  font-weight: normal;
+}
+
+.invalid-feedback {
+  display: block;
+}
+
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+.btn + .btn {
+  margin-left: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .col-md-6 {
+    margin-bottom: 1rem;
+  }
+}
+</style>

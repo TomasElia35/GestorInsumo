@@ -1,14 +1,37 @@
+// src/app/app-routing.module.ts (agregar estas rutas)
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LoginComponent } from './auth/login/login.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { AuthGuard } from './auth/guards/auth.guard';
+import { UserListComponent } from './components/user-list/user-list.component';
+import { UserFormComponent } from './components/user-form/user-form.component';
+// Importar tu guard de autenticación existente
+// import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
-  { path: '**', redirectTo: '/login' }
+  // Rutas existentes...
+  
+  // Rutas de usuarios
+  {
+    path: 'usuarios',
+    component: UserListComponent,
+    // canActivate: [AuthGuard] // Descomenta si tienes un guard de autenticación
+  },
+  {
+    path: 'usuarios/crear',
+    component: UserFormComponent,
+    // canActivate: [AuthGuard]
+  },
+  {
+    path: 'usuarios/editar/:id',
+    component: UserFormComponent,
+    // canActivate: [AuthGuard]
+  },
+  
+  // Redirección por defecto
+  {
+    path: '',
+    redirectTo: '/usuarios',
+    pathMatch: 'full'
+  }
 ];
 
 @NgModule({
@@ -17,5 +40,4 @@ const routes: Routes = [
 })
 export class AppRoutingModule { }
 
-// Exportar rutas para uso en configuración standalone si es necesario
-export { routes };
+

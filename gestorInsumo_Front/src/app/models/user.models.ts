@@ -1,19 +1,13 @@
-// src/app/shared/models/user.models.ts
-
+// src/app/models/user.model.ts
 export interface User {
-  id: number;
+  id?: number;
   nombre: string;
   apellido: string;
   mail: string;
   contrasena?: string;
   estado: boolean;
-  fechaCreacion: Date;
+  fechaCreacion?: Date;
   rol: Rol;
-}
-
-export interface Rol {
-  id: number;
-  nombre: string;
 }
 
 export interface UserRequest {
@@ -21,7 +15,7 @@ export interface UserRequest {
   apellido: string;
   mail: string;
   contrasena: string;
-  estado: boolean;
+  estado?: boolean;
   rol: number;
 }
 
@@ -32,18 +26,23 @@ export interface UserResponse {
   mail: string;
   contrasena: string;
   estado: boolean;
-  fechaCreacion: string;
-  rol: Rol;
+  fechaCreacion: Date;
+  rol: RolDTO;
+}
+
+export interface Rol {
+  id: number;
+  nombre: string;
+}
+
+export interface RolDTO {
+  id: number;
+  nombre: string;
 }
 
 export interface ApiResponse<T> {
-  success: boolean;
   data?: T;
-  message?: string;
   error?: string;
-}
-
-export interface DeleteResponse {
-  eliminado: boolean;
-  mensaje: string;
+  eliminado?: boolean;
+  mensaje?: string;
 }

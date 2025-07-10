@@ -1,0 +1,52 @@
+// src/app/components/navigation/navigation.component.html
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+      <i class="fas fa-boxes"></i> Gestor de Insumos
+    </a>
+    
+    <button 
+      class="navbar-toggler" 
+      type="button"
+      (click)="toggleNavbar()"
+      [attr.aria-expanded]="!isCollapsed">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="navbar-collapse" [class.collapse]="isCollapsed">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+          </a>
+        </li>
+        <li class="nav-item" *ngIf="currentUser?.rol?.nombre === 'ADMIN'">
+          <a class="nav-link" routerLink="/usuarios" routerLinkActive="active">
+            <i class="fas fa-users"></i> Usuarios
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/insumos" routerLinkActive="active">
+            <i class="fas fa-box"></i> Insumos
+          </a>
+        </li>
+      </ul>
+
+      <ul class="navbar-nav" *ngIf="currentUser">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" 
+             role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-user"></i> {{ currentUser.nombre }} {{ currentUser.apellido }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog"></i> Perfil</a></li>
+            <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Configuración</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#" (click)="logout()"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

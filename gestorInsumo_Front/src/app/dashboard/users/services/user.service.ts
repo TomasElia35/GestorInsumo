@@ -4,8 +4,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { TokenService } from '../../../shared/services/token.service';
-import { User, UserRequest, UserResponse, Rol, DeleteResponse } from '../../../shared/models/user.models';
+import { TokenService } from '../../../services/token.service';
+import { User, UserRequest, UserResponse, Rol, DeleteResponse } from '../../../models/user.models';
 
 @Injectable({
   providedIn: 'root'

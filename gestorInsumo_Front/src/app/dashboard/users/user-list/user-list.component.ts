@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { UserService } from '../services/user.service';
 // Update the path below to the correct location of user.models.ts
 // Example: If user.models.ts is in src/app/shared/models, use the following:
-import { UserResponse, Rol } from '../../../shared/models/user.models';
+import { UserResponse, Rol } from '../../../models/user.models';
 
 @Component({
   selector: 'app-user-list',

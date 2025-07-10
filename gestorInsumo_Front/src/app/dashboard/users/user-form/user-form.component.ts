@@ -4,7 +4,7 @@ import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChange
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
-import { UserRequest, UserResponse, Rol } from '../../../shared/models/user.models';
+import { UserRequest, UserResponse, Rol } from '../../../models/user.models';
 
 @Component({
   selector: 'app-user-form',
